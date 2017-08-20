@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	<!-- 设置由spring实列Action对象 -->
+	<constant name="struts.objectFactory" value="spring"></constant>
+	<constant name="struts.ognl.allowStaticMethodAccess" value="true"></constant>
+
+	<package name="myDefault" extends="struts-default">
+	</package>
+
+	<package name="emp" extends="myDefault" namespace="/emp">
+		<action name="login" class="empAction" method="login">
+			<result type="redirect">/common/main.jsp</result>
+			<result name="login">/emp/login.jsp</result>
+		</action>
+		<action name="add" class="empAction" method="add">
+			<result>/emp/emp_add.jsp</result>
+			<result name="add">/emp/emp_add.jsp</result>
+		</action>
+		<action name="list2" class="empAction" method="list2">
+			<result>/emp/emp_list.jsp</result>
+		</action>
+		<action name="search" class="empAction" method="search">
+			<result>/emp/emp_search.jsp</result>
+		</action>
+		<action name="logOut" class="empAction" method="logOut">
+			<result>/emp/login.jsp</result>
+		</action>
+		<action name="delete" class="empAction" method="delete">
+			<result type="chain">
+				<param name="namespace">/emp</param>
+				<param name="actionName">list2</param>
+
+			</result>
+		</action>
+	</package>
+	<!-- vehicle -->
+	<package name="vehicle" extends="myDefault" namespace="/vehicle">
+		<action name="add" class="vehAction" method="add">
+			<result>/vechile/vechicle_add.jsp</result>
+			<result name="false">/vechile/vechicle_add.jsp</result>
+		</action>
+		<action name="list" class="vehAction" method="list">
+			<result>/vechile/vehicle_list.jsp</result>
+		</action>
+		<action name="search" class="vehAction" method="search">
+			<result>/vechile/vechicle_search.jsp</result>
+			<result name="input">/vechile/vechicle_search.jsp</result>
+		</action>
+		<action name="edit" class="vehAction" method="edit">
+			<result>/vechile/vechicle_edit.jsp</result>
+		</action>
+		<action name="update" class="vehAction" method="update">
+			<result type="chain">
+				<param name="actionName">list</param>
+				<param name="namespace">/vehicle</param>
+			</result>
+		</action>
+		<action name="delete" class="vehAction" method="delete">
+			<result type="chain">
+				<param name="actionName">list</param>
+				<param name="namespace">/vehicle</param>
+			</result>
+		</action>
+	</package>
+
+	<!-- station -->
+	<package name="station" extends="myDefault" namespace="/station">
+		<action name="list" class="staAction" method="list">
+			<result>/station/station_list.jsp</result>
+		</action>
+		<action name="add" class="staAction" method="add">
+			<result type="chain">
+				<param name="namespace">/station</param>
+				<param name="actionName">list</param>
+			</result>
+		</action>
+		<action name="search" class="staAction" method="getInfoByName">
+			<result>/station/station_search.jsp</result>
+		</action>
+	</package>
+	<!-- route -->
+	<package name="route" extends="myDefault" namespace="/route">
+		<action name="list" class="routeAction" method="list">
+			<result>/route/route_list.jsp</result>
+		</action>
+		<action name="addRoute" class="routeAction" method="addRoute">
+			<result type="chain">
+				<param name="namespace">/route</param>
+				<param name="actionName">list</param>
+			</result>
+			<result name="false">/route/route_list.jsp</result>
+			<result name="input" type="chain">
+				<param name="namespace">/route</param>
+				<param name="actionName">list</param>
+			</result>
+		</action>
+	</package>
+	<!-- ajax异步验证 -->
+	<package name="ajax" extends="json-default" namespace="/ajax">
+		<global-results>
+			<result type="json">
+				<param name="root">result</param>
+			</result>
+		</global-results>
+
+		<action name="checkAccount" class="empAction" method="ajaxCheckAcount">
+		</action>
+		<action name="getVehByNum" class="vehAction" method="getVehByNum">
+		</action>
+		<action name="getStations" class="staAction" method="list"></action>
+		<action name="getCharge" class="exChargeAction" method="getCharge"></action>
+		<action name="checkStationId" class="staAction" method="checkStationId">
+		</action>
+		<action name="checkStationName" class="staAction" method="checkStationName">
+		</action>
+	</package>
+</struts>

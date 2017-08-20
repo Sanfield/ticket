@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xasxt.tickect.dao.StaMapper">
+	<resultMap type="StaInfo" id="rm1">
+		<id column="station_id" property="stationId" />
+		<result column="station_name" property="stationName" />
+		<result column="distance" property="distance" />
+	</resultMap>
+	<resultMap type="StationFeeInfo" id="rm2">
+		<id column="serial_id" property="serialId" />
+		<result column="station_id" property="stationId" />
+		<result column="station_name" property="stationName" />
+		<result column="distance" property="distance" />
+		<result column="order_value" property="orderValue" />
+		<result column="price" property="price" />
+		<result column="baggage_fee" property="baggageFee" />
+		<association property="routeInfo" javaType="RouteInfo">
+			<id column="route_id" property="routeId" />
+		</association>
+	</resultMap>
+	<select id="getAllStation" resultMap="rm1">
+		select
+		station_id,station_name,distance from stations where dele_flag = 0 or
+		dele_flag is null
+	</select>
+	<insert id="add" parameterType="StaInfo">
+		insert into
+		stations(station_id,station_name,distance,dele_flag)values(#{stationId},#{stationName},#{distance},0)
+	</insert>
+	<select id="getStationInfoById" resultMap="rm1">
+		select
+		station_id,station_name,distance from stations where (dele_flag = 0 or
+		dele_flag is null) and trim(station_id)=#{stationId}
+	</select>
+	<select id="getStationInfoByName" resultMap="rm1">
+		select
+		station_id,station_name,distance from stations where (dele_flag = 0 or
+		dele_flag is null) and trim(station_name)=#{stationName}
+	</select>
+	<select id="getStartTerminal" parameterType="string" resultMap="rm2">
+		(SELECT 0 as serial_id,t.route_id,t.start_station AS
+		station_id,s.station_name,0 AS order_value,0 AS distance,0 AS price,0
+		AS baggage_fee
+		FROM routes t INNER JOIN stations s ON
+		t.start_station=s.station_id
+		WHERE t.route_id=#{routeId}
+    	UNION
+    	SELECT -1 
+		as
+		serial_id,t.route_id,t.terminal_station,s.station_name,999,s.distance,t.price,t.baggage_fee
+		FROM routes t INNER JOIN stations s ON
+		t.terminal_station=s.station_id
+		WHERE t.route_id=#{routeId})
+    	ORDER BY
+		order_value
+	</select>
+</mapper>

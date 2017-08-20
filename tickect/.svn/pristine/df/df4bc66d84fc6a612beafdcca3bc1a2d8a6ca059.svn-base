@@ -1,0 +1,22 @@
+package com.xasxt.tickect.action;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import com.xasxt.tickect.service.RouteService;
+import com.xasxt.tickect.vo.RouteInfo;
+
+public class RouteAction extends BaseAction {
+
+	@Resource
+	private RouteService routeService;
+	
+	public String list(){
+		
+		List<RouteInfo> list= this.routeService.getList();
+		super.save2valueStack("list", list);
+		return SUCCESS;
+	}
+	
+}

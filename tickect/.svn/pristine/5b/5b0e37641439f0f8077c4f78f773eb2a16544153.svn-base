@@ -1,0 +1,165 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<jsp:include page="../common/page_common.jsp"></jsp:include>
+<title>站点列表</title>
+<script type="text/javascript">
+	$(function() {
+		//检查站点编号
+		$("#stationId").blur(checkStationId);
+		//检查站点名称
+		$("#stationName").blur(checkStationName);
+		//清空消息div
+		$("#stationId").focus(clearMsg);
+		$("#stationName").focus(clearMsg);
+
+	});
+	//清空消息div
+	function clearMsg() {
+		$("#msgPrompt").empty();
+	}
+	var sidValid = true;
+	var snameValid = true;
+	//检查站点编号
+	function checkStationId() {
+		var stationId = $("#stationId").val();
+		sidValid = true;
+		if (stationId) {
+
+			$.get("${pageContext.request.contextPath}/ajax/checkStationId", {
+				"info.stationId" : stationId
+			}, function(r) {
+				if (r) {
+					if (r.code == 0) {
+						if (r.result) {
+							sidValid = true;
+						} else {
+							sidValid = false;
+							$("#msgPrompt").text("系统中已经存在该站点!");
+						}
+					} else {
+						alert(r.message);
+					}
+				}
+			}, "json");
+		}
+	}
+	//检查站点名称
+	function checkStationName() {
+		var stationName = $("#stationName").val();
+		snameValid = true;
+		if (stationId) {
+
+			$.get("${pageContext.request.contextPath}/ajax/checkStationName", {
+				"info.stationName" : stationName
+			}, function(r) {
+				if (r) {
+					if (r.code == 0) {
+						if (r.result) {
+							snameValid = true;
+						} else {
+							snameValid = false;
+							$("#msgPrompt").text("系统中已经存在该站点!");
+						}
+					} else {
+						alert(r.message);
+					}
+				}
+			}, "json");
+		}
+	}
+	//表单检查
+	function checkInput() {
+		if (!sidValid || !snameValid) {
+			alert("该站点已经存在!");
+			return false;
+		}
+		var r = checkRequired([ "stationId", "stationName", "distance" ]);
+		if (!r) {
+			return false;
+		}
+		$("form").get(0).submit();
+	}
+</script>
+</head>
+<body>
+	<div class="container-fluid">
+		<ol class="breadcrumb">
+			<li><a href="#">线路和站点</a></li>
+			<li class="active">站点列表</li>
+		</ol>
+		<div class="row">
+			<!-- 站点列表 -->
+			<div class="col-md-7 col-xs-7">
+				<span class="label  label-info">已录入的站点:</span>
+				<table
+					class="table table-striped table-bordered table-hover table-condensed">
+					<thead>
+						<tr>
+							<th>站点编号</th>
+							<th>站点名称</th>
+							<th>公里数</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<c:if test="${not empty staList }">
+							<c:forEach items="${staList }" var="sta">
+								<tr>
+									<td>${sta.stationId }</td>
+									<td>${sta.stationName }</td>
+									<td>${sta.distance }</td>
+									<td><a href="#">编辑</a>&nbsp;<a href="#">删除</a></td>
+								</tr>
+							</c:forEach>
+						</c:if>
+					</tbody>
+				</table>
+			</div>
+			<!-- 录入新站点 -->
+			<div class="col-md-5 col-xs-5">
+				<span class="label label-warning">录入新站点:</span>
+				<form action="${pageContext.request.contextPath }/station/add"
+					class="form-horizontal" style="background-color: #cacccc;">
+					<div class="form-group">
+						<div id="msgPrompt" class="col-md-12 col-xs-12 text-danger">&nbsp;</div>
+					</div>
+					<div class="form-group">
+						<label for="stationId" class="col-xs-4 control-label">站点编号:</label>
+						<div class="col-xs-7">
+							<input type="text" id="stationId" name="info.stationId"
+								class="form-control" maxlength="4" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="stationName" class="col-xs-4 control-label">站点名称:</label>
+						<div class="col-xs-7">
+							<input type="text" id="stationName" name="info.stationName"
+								class="form-control" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="distance" class="col-xs-4 control-label">距离:</label>
+						<div class="col-xs-7">
+							<div class="input-group">
+								<input type="text" id="distance" name="info.distance"
+									class="form-control" /> <span class="input-group-addon">公里</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-xs-4 col-xs-offset-5">
+							<button type="button" onclick="checkInput()"
+								class="btn btn-primary">提交</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

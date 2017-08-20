@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xasxt.tickect.dao.EXChargeMapper">
+	<resultMap type="StaInfo" id="rm1">
+		<id column="station_id" property="stationId" />
+		<result column="station_name" property="stationName" />
+		<result column="distance" property="distance" />
+	</resultMap>
+	<select id="getDisById" resultMap="rm1">
+		select station_id,station_name,distance
+		from stations
+		where station_id= #{stationId}
+	</select>
+</mapper>

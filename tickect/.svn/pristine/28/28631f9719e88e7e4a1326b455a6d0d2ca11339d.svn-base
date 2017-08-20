@@ -1,0 +1,6 @@
+@CHARSET "UTF-8";
+div.logo{
+	height:100px;
+	background-image: url("../img/logo.png");
+	margin-bottom:1px;
+}

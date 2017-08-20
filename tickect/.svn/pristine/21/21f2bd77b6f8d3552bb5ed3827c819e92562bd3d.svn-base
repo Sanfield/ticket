@@ -1,0 +1,11 @@
+package com.xasxt.tickect.dao;
+
+import java.util.List;
+
+import com.xasxt.tickect.vo.RouteInfo;
+
+public interface RouteMapper {
+
+	List<RouteInfo> getList();
+
+}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xasxt.tickect.dao.RouteMapper">
+<resultMap type="RouteInfo" id="rm1">
+	<id column="route_id" property="routeId"/>
+	<result column="route_name" property="routeName"/>
+	<result column="price" property="price"/>
+	<result column="baggage_fee" property="baggaceFee"/>
+	<result column="start_station" property="startStation"/>
+	<result column="terminal_station" property="terminalStation"/>
+	<result column="startname" property="startName"/>
+	<result column="terminalname" property="terminalName"/>
+</resultMap>
+	<select id="getList" resultMap="rm1">
+	 SELECT route_id,route_name,price,baggage_fee,start_station,terminal_station,t.station_name startname,st.station_name terminalname
+    FROM routes r INNER JOIN stations t ON r.start_station=t.station_id
+    INNER JOIN stations st ON r.terminal_station=st.station_id
+	</select>
+	<insert id="addRoute" parameterType="RouteInfo">
+		  INSERT INTO routes
+		  (route_id,route_name,price,baggage_fee,start_station,terminal_station)
+   			VALUES(rount_id.NEXTVAL,
+   			#{routeName},
+   			#{price},
+   			#{baggaceFee},
+   			#{startStation},
+   			#{terminalStation})
+	</insert>
+</mapper>

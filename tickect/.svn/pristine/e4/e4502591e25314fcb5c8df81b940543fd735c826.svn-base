@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xasxt.tickect.dao.StaMapper">
+	<resultMap type="StaInfo" id="rm1">
+		<id column="station_id" property="stationId" />
+		<result column="station_name" property="stationName" />
+		<result column="distance" property="distance" />
+	</resultMap>
+	<select id="getAllStation" resultMap="rm1">
+		select
+		station_id,station_name,distance from stations where dele_flag = 0 or
+		dele_flag is null
+	</select>
+	<insert id="add" parameterType="StaInfo">
+		insert into
+		stations(station_id,station_name,distance,dele_flag)values(#{stationId},#{stationName},#{distance},0)
+	</insert>
+	<select id="getStationInfoById" resultMap="rm1">
+		select
+		station_id,station_name,distance from stations where (dele_flag = 0 or
+		dele_flag is null) and trim(station_id)=#{stationId}
+	</select>
+	<select id="getStationInfoByName" resultMap="rm1">
+		select
+		station_id,station_name,distance from stations where (dele_flag = 0 or
+		dele_flag is null) and trim(station_name)=#{stationName}
+	</select>
+</mapper>

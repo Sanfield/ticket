@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xasxt.tickect.dao.EmpMapper">
+	<resultMap type="EmpInfo" id="rm1">
+		<id column="emp_id" property="empId" />
+		<result column="account" property="account" />
+		<result column="real_name" property="realName" />
+		<result column="sex" property="sex" />
+		<result column="nationality" property="nationality" />
+		<result column="certificate_type" property="certificateType" />
+		<result column="certificate_number" property="certificateNumber" />
+		<result column="dob" property="dob" />
+		<result column="hire_date" property="hireDate" />
+		<result column="address" property="address" />
+		<result column="telephone" property="telephone" />
+		<result column="duty" property="duty" />
+		<result column="role" property="role" />
+
+	</resultMap>
+	<select id="login" parameterType="string" resultMap="rm1">
+		SELECT
+		emp_id,ACCOUNT,pwd,real_name,sex,nationality,certificate_type,certificate_number,dob,hire_date,address,telephone,duty,role
+		FROM empl WHERE ( dele_flag=0 or dele_flag is null) and ACCOUNT=#{account}
+	</select>
+
+	<insert id="add" parameterType="EmpInfo">
+		insert into empl(
+		emp_id,ACCOUNT,pwd,real_name,sex,nationality,certificate_type,certificate_number,dob,hire_date,address,telephone,duty,role,dele_flag)
+		values(
+		emp_id.nextval,
+		#{account},
+		#{pwd},
+		#{realName},
+		#{sex},
+		#{nationality,jdbcType=VARCHAR},
+		#{certificateType},
+		#{certificateNumber},
+		#{dob},
+		#{hireDate,jdbcType=DATE},
+		#{address,jdbcType=VARCHAR},
+		#{telephone},
+		#{duty,jdbcType=VARCHAR},
+		#{role},0)
+	</insert>
+	<select id="getAllEmpInfo" resultMap="rm1">
+		SELECT
+		emp_id,ACCOUNT,pwd,real_name,sex,nationality,certificate_type,certificate_number,dob,hire_date,address,telephone,duty,role
+		FROM empl WHERE dele_flag=0 or dele_flag is null
+	</select>
+	<select id="search" parameterType="EmpInfo" resultMap="rm1">
+		SELECT
+		emp_id,ACCOUNT,pwd,real_name,sex,nationality,certificate_type,certificate_number,dob,hire_date,address,telephone,duty,role
+		FROM empl WHERE (dele_flag=0 or dele_flag is null)
+		<if test="realName!=null">and real_name like '%'||#{realName,jdbcType=VARCHAR}||'%'
+		</if>
+		<if test="role!=null">and role=#{role,jdbcType=INTEGER}</if>
+	</select>
+	<update id="delete" parameterType="int">
+		UPDATE empl SET dele_flag=1
+		WHERE emp_id=#{empId}
+	</update>
+
+	<select id="getAllEmpInfo2" parameterType="int" resultMap="rm1">
+		SELECT
+		temp.emp_id,temp.ACCOUNT,temp.pwd,temp.real_name,temp.sex,temp.nationality,temp.certificate_type,temp.certificate_number,temp.dob,temp.hire_date,temp.address,temp.telephone,temp.duty,temp.role,temp.rn
+		FROM ( SELECT
+		emp_id,ACCOUNT,pwd,real_name,sex,nationality,certificate_type,certificate_number,dob,hire_date,address,telephone,duty,role,ROWNUM
+		rn FROM empl where (dele_flag=0 or dele_flag is null) and
+		<![CDATA[ ROWNUM<=#{0}*#{1}) ]]>
+		temp WHERE
+		temp.rn>(#{0}-1)*#{1}
+	</select>
+	<select id="getEmpRowCount" resultType="int">
+		select count(emp_id) from
+		empl where (dele_flag=0 or dele_flag is null)
+	</select>
+
+</mapper>
+

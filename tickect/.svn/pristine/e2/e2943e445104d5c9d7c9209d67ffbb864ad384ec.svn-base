@@ -1,0 +1,41 @@
+package com.xasxt.tickect.service.impl;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import com.xasxt.tickect.dao.RouteMapper;
+import com.xasxt.tickect.service.RouteService;
+import com.xasxt.tickect.vo.RouteInfo;
+
+public class RouteServiceImpl implements RouteService {
+
+	@Resource
+	private RouteMapper routeMapper;
+	/**
+	 * 获取路线列表
+	 */
+	@Override
+	public List<RouteInfo> getList() {
+		return this.routeMapper.getList();
+	}
+	/**
+	 * 增加线路
+	 */
+	@Override
+	public boolean addRoute(RouteInfo routeInfo) {
+		int count = this.routeMapper.addRoute(routeInfo);
+		return count>0;
+	}
+	/**
+	 * 检查路线名是否存在
+	 */
+	@Override
+	public RouteInfo getInfoByName(String routeName) {
+		// TODO Auto-generated method stub
+		return this.routeMapper.getInfoByName(routeName);
+	}
+
+	
+	
+}

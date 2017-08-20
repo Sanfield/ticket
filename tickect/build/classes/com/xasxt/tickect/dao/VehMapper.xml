@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xasxt.tickect.dao.VehMapper">
+<resultMap type="VehInfo" id="rm1">
+	<result column="vehicle_num" property="vechNum"/>
+	<result column="buy_date" property="verchBuyDate"/>
+	<result column="brand" property="vechBrand"/>
+	<result column="model" property="vechModel"/>
+	<result column="max_carry" property="vechMax"/>
+	<result column="displacement" property="vechDisplay"/>
+	<result column="engine_number" property="verchEnge"/>
+</resultMap>
+	<insert id="add" parameterType="VehInfo">
+	INSERT INTO vehicles(vehicle_id,vehicle_num,buy_date,brand,model,max_carry,displacement,engine_number,dele_flag )
+	VALUES(vechicle_id.nextval,
+	#{vechNum},
+	#{verchBuyDate},
+	#{vechBrand},
+	#{vechModel},
+	#{vechMax},
+	#{vechDisplay},
+	#{verchEnge},
+	0)
+	</insert>
+	<select id="getAllVel" resultMap="rm1">
+		select vehicle_id,vehicle_num,buy_date,brand,model,max_carry,displacement,engine_number
+		from vehicles
+		where (dele_flag=0 or dele_flag=null)
+	</select>
+	<select id="getVelsByNum" parameterType="string" resultMap="rm1">
+		select vehicle_id,vehicle_num,buy_date,brand,model,max_carry,displacement,engine_number
+		from vehicles
+		where (dele_flag=0 or dele_flag=null) 
+		AND vehicle_num LIKE '%'||#{vechNum}||'%'
+	</select>
+	<select id="getVehByNum" parameterType="string" resultMap="rm1">
+		select vehicle_id,vehicle_num,buy_date,brand,model,max_carry,displacement,engine_number
+		from vehicles
+		where (dele_flag=0 or dele_flag=null) AND vehicle_num =#{vechNum}
+	</select>
+	<update id="update" parameterType="VehInfo">
+	 UPDATE vehicles SET 	
+	 buy_date=#{verchBuyDate},
+	 brand=#{vechBrand},
+	 model=#{vechModel},
+	 max_carry=#{vechMax},
+	 displacement=#{vechDisplay},
+	 engine_number=#{verchEnge}
+	 WHERE vehicle_num=#{vechNum}
+	</update>
+	<update id="delete" parameterType="VehInfo">
+		UPDATE vehicles SET dele_flag=1
+		WHERE vehicle_num=#{vechNum} 
+	</update>
+	<select id="getCounts" resultType="int">
+		SELECT COUNT(*)
+    	FROM vehicles
+	</select>
+	<select id="getListByPage" resultMap="rm1">
+	<![CDATA[SELECT TEMP.vehicle_id,TEMP.vehicle_num,TEMP.buy_date,TEMP.brand,TEMP.model,TEMP.max_carry,TEMP.displacement,TEMP.engine_number
+    	FROM(select vehicle_id,vehicle_num,buy_date,brand,model,max_carry,displacement,engine_number,ROWNUM RN
+		from vehicles where (dele_flag=0 or dele_flag=null)  AND ROWNUM<(#{0}*#{1})) TEMP
+    	WHERE TEMP.RN>=(#{0}-1)*#{1}  ]]>
+	</select>
+</mapper>

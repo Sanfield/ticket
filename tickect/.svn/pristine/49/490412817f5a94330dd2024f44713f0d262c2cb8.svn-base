@@ -1,0 +1,15 @@
+package com.xasxt.tickect.service;
+
+import java.util.List;
+
+import com.xasxt.tickect.vo.RouteInfo;
+
+public interface RouteService {
+
+	/**
+	 * 获取路线列表
+	 * @return
+	 */
+	List<RouteInfo> getList();
+
+}
